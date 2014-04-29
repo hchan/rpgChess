@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RPG Chess: Battle For Elemental Magic</title>
+<link rel="stylesheet" href="css/themes/base/jquery-ui.css" />
+<!-- <script type="text/javascript" src="cordova-2.3.0.js"></script> -->
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+<!-- <script type="text/javascript" src="js/jquery.tools.min.js"></script> -->
+
+
+<script type="text/javascript" src="js/ui/jquery-ui.js"></script>
+
+<script type="text/javascript" src="js/jshashtable-2.1.js"></script>
+<script type="text/javascript" src="js/jshashset.js"></script>
+<script type="text/javascript" src="js/noty/jquery.noty.js"></script>
+<script type="text/javascript" src="js/noty/layouts/bottom.js"></script>
+<script type="text/javascript" src="js/noty/layouts/top.js"></script>
+<script type="text/javascript" src="js/noty/themes/default.js"></script>
+
+
+<script type="text/javascript" src="js/Global.js"></script>
+<script type="text/javascript" src="js/Init.js"></script>
+<script type="text/javascript" src="js/Tile.js"></script>
+<script type="text/javascript" src="js/ImageHelper.js"></script>
+<script type="text/javascript" src="js/Pawn.js"></script>
+<script type="text/javascript" src="js/Pawn.js"></script>
+<script type="text/javascript" src="js/Rook.js"></script>
+<script type="text/javascript" src="js/Knight.js"></script>
+<script type="text/javascript" src="js/Bishop.js"></script>
+<script type="text/javascript" src="js/Queen.js"></script>
+<script type="text/javascript" src="js/King.js"></script>
+<script type="text/javascript" src="js/BoardPiece.js"></script>
+<script type="text/javascript" src="js/ControlPanel.js"></script>
+<script type="text/javascript" src="js/SkillHelper.js"></script>
+<script type="text/javascript" src="js/Sacrifice.js"></script>
+<script type="text/javascript" src="js/FirstAid.js"></script>
+<script type="text/javascript" src="js/RestoreLife.js"></script>
+<script type="text/javascript" src="js/Earthquake.js"></script>
+<script type="text/javascript" src="js/Teleport.js"></script>
+<script type="text/javascript" src="js/Fireball.js"></script>
+<script type="text/javascript" src="js/EtherealDestruction.js"></script>
+<script type="text/javascript" src="js/Player.js"></script>
+<script type="text/javascript" src="js/ResourceHelper.js"></script>
+<script type="text/javascript" src="js/Aizero.js"></script>
+<script type="text/javascript" src="js/WeightedTurn.js"></script>
+<script type="text/javascript" src="js/GameHelper.js"></script>
+<script type="text/javascript" src="js/BoardClickHelper.js"></script>
+<script type="text/javascript" src="js/Util.js"></script>
+<script type="text/javascript" src="js/SoundHelper.js"></script>
+<script type="text/javascript" src="js/JSONHelper.js"></script>
+
+
+<link rel="stylesheet" href="/resources/demos/style.css" />
+<link rel="stylesheet" href="css/tabs.css" type="text/css"
+	media="screen" />
+<link rel="stylesheet" href="css/main.css" type="text/css"
+	media="screen" />
+</head>
+<body>
+	<DIV id="LOADING"><DIV id="PLEASEWAIT">Please Wait</DIV>Loading...</DIV>
+	<div id="invisibleHelp" style="display: none">
+		<span id="sacrificeHelp">
+			<div class="helpHeader">Sacrifice</div> <BR /> Sacrifices the life
+			of this unit to do damage (<span
+			class='classSACRIFICE_MULTIPLIER'></span>X unit damage +/- <span
+			class='classDMG_RAND_PERCENT'></span>%) to all adjacent enemy units.
+		</span> <span id="fireballHelp">
+			<div class="helpHeader">Fireball</div> <BR /> Launches a fireball to
+			any enemy unit: <span class='classFIREBALL_MULTIPLIER'></span>X
+			unit damage +/- <span class='classDMG_RAND_PERCENT'></span>%
+		</span> <span id="earthquakeHelp">
+			<div class="helpHeader">Earthquake</div> <BR />Creates an earthquake
+			that damages all enemy units on the board. Dmg amount: <span
+			class='classEARTHQUAKE_MULTIPLIER'></span>X unit damage +/- <span
+			class='classDMG_RAND_PERCENT'></span>%
+		</span> <span id="teleportHelp"> <
+			<div class="helpHeader">Teleport</div> <BR />Teleports this unit to
+			any empty tile on the board
+		</span> <span id="firstAidHelp">
+			<div class="helpHeader">First Aid</div> <BR />Heals a friend unit (within one adjacent tile)
+			(not including oneself) for: Healer's heal stat <span
+			class='classFIRSTAID_MULTIPLIER'></span>X +/- <span
+			class='classHEAL_RAND_PERCENT'></span>%.
+		</span> <span id="restoreLifeHelp">
+			<div class="helpHeader">Restore Life</div> <BR />Heals a friend unit
+			(not including oneself) for: Healer's heal stat <span
+			class='classRESTORELIFE_MULTIPLIER'></span>X +/- <span
+			class='classHEAL_RAND_PERCENT'></span>%
+		</span> <span id="etherealDestructionHelp">
+			<div class="helpHeader">Ethereal Destruction</div> <BR />The 'I WIN'
+			ability. Summons an ethereal force of energy that will destroy the
+			opponent's king.
+		</span>
+	</div>
+	<SCRIPT>
+		$(".classDMG_RAND_PERCENT").html(DMG_RAND_PERCENT);
+		$(".classHEAL_RAND_PERCENT").html(HEAL_RAND_PERCENT);
+		$(".classFIREBALL_MULTIPLIER").html(getSkillMultiplier("fireball"));
+		$(".classEARTHQUAKE_MULTIPLIER").html(getSkillMultiplier("earthquake"));
+		$(".classSACRIFICE_MULTIPLIER").html(getSkillMultiplier("sacrifice"));
+		$(".classRESTORELIFE_MULTIPLIER").html(getSkillMultiplier("restoreLife"));
+		$(".classFIRSTAID_MULTIPLIER").html(getSkillMultiplier("firstAid"));
+		
+	</SCRIPT>
+	<DIV id="FINISHEDLOADING" style="display: none">
+		<TABLE>
+			<TR>
+				<TD><CANVAS id="BOARDCANVAS">Your browser does not support the HTML5 BOARDCANVAS tag.</CANVAS></TD>
+				<TD><DIV ID="CONTROLPANEL">
+
+						<ul class="tabs" id="tabs">
+							<li><a id="GAMEINFOHEADER" class="s" href="#"
+								onclick="setActiveGameInfo()">Game Info</a></li>
+							<li><a id="SELECTEDUNITHEADER" class="s" href="#"
+								onclick="setActiveSelectedUnit()">Unit</a></li>
+						</ul>
+
+						<!-- tab "panes" -->
+						<div class="panes">
+							<div ID="GAMEINFO">
+								<div id="GAMEINFOACCORDION">
+									<h3 id="INFO_HEADER" class="myAccordionHeader">Options</h3>
+									<div id="INFO"></div>
+
+									<h3 id="GAMELOG_HEADER" class="myAccordionHeader">Game Log</h3>
+									<div id="GAMELOG"></div>
+								</div>
+							</div>
+							<div ID="SELECTEDUNIT"></div>
+						</div>
+
+					</DIV></TD>
+			</TR>
+		</TABLE>
+	</DIV>
+	<div style="display: none">
+		<div id="MENU">
+			<div class="title" id="title">RPG Chess: <BR />Battle For Elemental Magic</div>
+			<OL>
+				<LI><A HREF='#' onclick="showHTML('GAMEMODE', 'INFO')">Game
+						Mode</A></LI>
+				<LI><A HREF='#' onclick="showHTML('RULES', 'INFO')">Object
+						/ Rules</A></LI>
+				<LI><A HREF='#' onclick="quickSave()">Quick Save</A></LI>
+				<LI><A HREF='#' onclick="quickRestore()">Quick Restore</A></LI>
+				<LI><A HREF='#' onclick="showHTML('CREDITS', 'INFO')">Credits</A></LI>
+			</OL>
+		</div>
+
+
+		<div id="GAMEMODE">
+			<div class="title">Game Mode</div>
+			<p>
+			<TABLE cellpadding="0" cellspacing="0">
+				<TR>
+					<TD />
+					<TD WIDTH="100%"><INPUT TYPE="radio" NAME="gameMode"
+						VALUE="COMP" checked="checked" />Player vs Computer</TD>
+
+					<TD />
+				</TR>
+				<TR>
+					<TD />
+					<TD><INPUT TYPE="radio" NAME="gameMode" VALUE="PVP_OFFLINE" />Player
+						vs Player (Offline)</TD>
+					<TD />
+				</TR>
+				<TR>
+					<TD COLSPAN="3" align="center"><INPUT TYPE="BUTTON"
+						NAME="startGame" VALUE="Start Game" onclick="startGame()" /></TD>
+				</TR>
+			</TABLE>
+
+			</p>
+			<A HREF="#" onclick="showHTML('MENU', 'INFO')"><IMG
+				SRC="img/back.png" HEIGHT="40px" WIDTH="40px" /></A>
+		</div>
+		<div id="RULES">
+			<div class="title">Objective / Rules</div>
+			<p>The objective of the game is to defeat the opponent's king.
+				Each unit (in exception to the Bishop) has a normal attack. The
+				bishop cannot attack but has the ability to heal other units as an
+				ability. Each unit can perform at least one ability. To see the
+				abilities of a unit, you can toggle on his normal attack mode to his
+				abilities list by doing alternate clicks on the unit. Some abilities
+				will have a resource (fire, earth, wind or water) cost associated
+				with it. Resources can be obtained by moving a unit into a tile of
+				that resource.</p>
+			<A HREF="#" onclick="showHTML('MENU', 'INFO')"><IMG
+				SRC="img/back.png" HEIGHT="40px" WIDTH="40px" /></A>
+		</div>
+		<div id="CREDITS">
+			<div class="title">Credits</div>
+		<div style="margin-top: 5px; margin-bottom: 5px">
+				Produced by Henry Chan <div class="email">hchan@apache.org</div><BR /> Please do not
+				hesitate to contact me if you have any bug reports, suggestions,
+				questions, proposed features or comments. <BR />
+			</div>
+			<A HREF="#" onclick="showHTML('MENU', 'INFO')"><IMG
+				SRC="img/back.png" HEIGHT="40px" WIDTH="40px" /></A>
+		</div>
+	</div>
+</body>
+<script>
+var canvasSupported = !!window.HTMLCanvasElement;
+if (canvasSupported) {
+	$(document).ready(init());
+} else {
+	$("#LOADING").html("HTMLCanvasElement not supported by this browser");
+}
+
+</script>
+</html>
+

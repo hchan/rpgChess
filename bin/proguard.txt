@@ -1,0 +1,9 @@
+# view AndroidManifest.xml #generated:53
+-keep class com.google.android.gcm.GCMBroadcastReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:52
+-keep class com.rpgchess.GCMIntentService { <init>(...); }
+
+# view AndroidManifest.xml #generated:46
+-keep class com.rpgchess.rpgChess { <init>(...); }
+
